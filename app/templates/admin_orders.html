@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <h2 class="text-center mt-4"> Manage Orders</h2>
+
+        <div class="text-end mb-3">
+            <form action="{{ url_for('admin.add_dog') }}" method="POST">
+                <button type="submit" class="btn btn-primary"> Add Random Dog</button>
+            </form>
+        </div>
+
+        
+        {% if orders %}
+            <table class="table table-striped mt-4">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Order ID</th>
+                        <th>User</th>
+                        <th>Total Price</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.user.username }}</td>
+                            <td>${{ order.total_price }}</td>
+                            <td>{{ order.status }}</td>
+                            <td>
+                                
+                                <form method="POST" action="{{ url_for('admin.update_orders', order_id=order.id) }}">
+                                    <div class="input-group">
+                                        <select name="status" class="form-select">
+                                            <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
+                                            <option value="Processing" {% if order.status == 'Processing' %}selected{% endif %}>Processing</option>
+                                            <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
+                                            <option value="Completed" {% if order.status == 'Completed' %}selected{% endif %}>Completed</option>
+                                        </select>
+                                        <button type="submit" class="btn btn-success">Update</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-center text-muted mt-4">No orders found.</p>
+        {% endif %}
+    </div>
+{% endblock %}

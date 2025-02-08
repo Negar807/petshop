@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2 class="text-center">Your Shopping Cart</h2>
+    {% if cart_items %}
+        <table class="table table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Dog</th>
+                    <th>Breed</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                    <tr>
+                        <td>{{ item.dog.name }}</td>
+                        <td>{{ item.dog.breed }}</td>
+                        <td>${{ item.dog.price }}</td>
+                        <td>{{ item.quantity }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p class="text-end"><b>Total Price: ${{ total_price }}</b></p>
+        <a href="{{ url_for('payment.checkout', order_id=current_order.id) }}" class="btn btn-primary">Proceed to Payment</a>
+    {% else %}
+        <p class="text-center">Your cart is empty.</p>
+    {% endif %}
+{% endblock %}

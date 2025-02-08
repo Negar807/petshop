@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2 class="text-center mb-4">Dog Store</h2>
+    <div class="row">
+        {% for dog in dogs %}
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="{{ dog.image_url }}" class="card-img-top" alt="{{ dog.breed }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ dog.breed }}</h5>
+                        <p class="card-text">Price: ${{ dog.price }}</p>
+                        <a href="{{ url_for('user.add_to_cart', dog_id=dog.id) }}" class="btn btn-success">Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
