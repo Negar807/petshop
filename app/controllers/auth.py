@@ -40,4 +40,4 @@ def login():
 def logout():
     logout_user()
     flash('You are logged out.', 'success')
-    return redirect('home.index')
+    return redirect('home')

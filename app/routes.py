@@ -9,7 +9,7 @@ from app.controllers.payment import payment_bp
 routes_bp = Blueprint('routes', __name__)
 
 def register_routes(app: Flask):
-    app.register_blueprint(home_bp)
+    app.register_blueprint(home_bp, url_prefix = '/')
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(user_bp, url_prefix='/user')
     app.register_blueprint(admin_bp, url_prefix='/admin')

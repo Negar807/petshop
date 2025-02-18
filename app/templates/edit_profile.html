@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2 class="text-center">Edit Profile</h2>
+
+    <div class="text-center">
+        <img src="{{ url_for('static', filename='img/' + (user.profile_image if user.profile_image else 'avatar.jpg')) }}" class="rounded-circle" width="150">
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.username.label(class="form-label") }}
+            {{ form.username(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
+            {{ form.email(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.profile_image.label(class="form-label") }}
+            {{ form.profile_image(class="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-success">Update Profile</button>
+    </form>
+{% endblock %}
+

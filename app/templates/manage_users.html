@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2 class="text-center">Manage Users</h2>
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ "Admin" if user.is_admin else "User" }}</td>
+                    <td>
+                        {% if not user.is_admin %}
+                            <form method="POST" action="{{ url_for('admin.make_admin', user_id=user.id) }}">
+                                <button type="submit" class="btn btn-warning">Make Admin</button>
+                            </form>
+                        {% else %}
+                            <span class="text-muted">Already Admin</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

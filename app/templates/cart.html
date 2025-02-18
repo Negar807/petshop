@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-
 {% block content %}
     <h2 class="text-center">Your Shopping Cart</h2>
+
     {% if cart_items %}
         <table class="table table-striped">
             <thead class="table-dark">
@@ -10,21 +10,34 @@
                     <th>Breed</th>
                     <th>Price</th>
                     <th>Quantity</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in cart_items %}
                     <tr>
-                        <td>{{ item.dog.name }}</td>
+                        <td><img src="{{ item.dog.image_url }}" alt="{{ item.dog.breed }}" style="width: 80px; height: auto;"></td>
                         <td>{{ item.dog.breed }}</td>
                         <td>${{ item.dog.price }}</td>
                         <td>{{ item.quantity }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('user.remove_from_cart', cart_id=item.id) }}">
+                                <button type="submit" class="btn btn-danger">Remove</button>
+                            </form>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
+
         <p class="text-end"><b>Total Price: ${{ total_price }}</b></p>
-        <a href="{{ url_for('payment.checkout', order_id=current_order.id) }}" class="btn btn-primary">Proceed to Payment</a>
+
+        {% if current_order %}
+            <a href="{{ url_for('payment.checkout', order_id=current_order.id) }}" class="btn btn-primary">Proceed to Payment</a>
+        {% else %}
+            <p class="text-muted">No active order found. Add items to cart first.</p>
+        {% endif %}
+
     {% else %}
         <p class="text-center">Your cart is empty.</p>
     {% endif %}

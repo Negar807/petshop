@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField , BooleanField, FloatField
+from wtforms import StringField, PasswordField, SubmitField , BooleanField, FloatField, FileField
 from wtforms.validators import Email, EqualTo, DataRequired, Length
+from flask_wtf.file import FileAllowed
 
 
 
@@ -24,3 +25,18 @@ class Paymenrt(FlaskForm):
     card_holder = StringField('Card Holder', validators=[DataRequired(),Length(min=3,max=25)])
     amount = FloatField('Amount', validators=[DataRequired()])
     submit = SubmitField('Pay Now')
+
+
+
+class EditProfileForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=4, max=25)])
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    profile_image = FileField('Profile Image', validators=[FileAllowed(['jpg', 'png', 'jpeg'])])
+    submit = SubmitField('Update Profile')
+
+
+class ChangePasswordForm(FlaskForm):
+    old_password = PasswordField('Current Password', validators=[DataRequired()])
+    new_password = PasswordField('New Password', validators=[DataRequired(), Length(min=6)])
+    confirm_password = PasswordField('Confirm New Password', validators=[DataRequired(), EqualTo('new_password')])
+    submit = SubmitField('Change Password')
