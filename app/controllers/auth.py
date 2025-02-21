@@ -9,7 +9,7 @@ from app.models import User
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-@auth_bp.route('/register', methods = ['GET', 'POST'])
+@auth_bp.route('/register', methods =['GET','POST'])
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('home.index'))
