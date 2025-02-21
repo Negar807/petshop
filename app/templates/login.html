@@ -1,19 +1,37 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>LogIn</h2>
-    <form method="POST">
+<div class="container mt-5">
+    <h2 class="text-center">Login</h2>
+
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+
+    <form method="POST" class="mt-4">
         {{ form.hidden_tag() }}
-        <div>
-            {{ form.email.label }}<br>
-            {{ form.email(size=32) }}<br>
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email:</label>
+            {{ form.email(class="form-control", placeholder="Enter your email") }}
+            {% for error in form.email.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
         </div>
-        <div>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}<br>
+
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            {{ form.password(class="form-control", placeholder="Enter your password") }}
+            {% for error in form.password.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
         </div>
-        <div>
-            {{ form.submit() }}
-        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Log In</button>
     </form>
+
+    <p class="text-center mt-3">
+        Don't have an account? <a href="{{ url_for('auth.register') }}">Sign up here</a>.
+    </p>
+</div>
 {% endblock %}
