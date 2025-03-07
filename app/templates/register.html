@@ -3,13 +3,21 @@
 {% block content %}
 <div class="container mt-5">
     <h2 class="text-center">Sign Up</h2>
-    
+
     {% for category, message in get_flashed_messages(with_categories=true) %}
         <div class="alert alert-{{ category }}">{{ message }}</div>
     {% endfor %}
 
     <form method="POST" class="mt-4">
         {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            {{ form.username(class="form-control", placeholder="Enter your username") }}
+            {% for error in form.username.errors %}
+                <small class="text-danger">{{ error }}</small>
+            {% endfor %}
+        </div>
 
         <div class="mb-3">
             <label for="email" class="form-label">Email:</label>

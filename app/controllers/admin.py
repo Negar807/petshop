@@ -1,5 +1,7 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+import os
+from flask import Blueprint, render_template, redirect, url_for, flash, request, current_app
 from flask_login import login_required, current_user
+from werkzeug.utils import secure_filename
 from app.models import Order, Dog, User
 from app import db
 from app.controllers.api_server import get_random_dog
@@ -96,8 +98,12 @@ def admin_edit_profile():
     if form.validate_on_submit():
         current_user.username = form.username.data
         current_user.email = form.email.data
-        if form.profile_image.data:  
-            current_user.profile_image = form.profile_image.data
+        if form.profile_image.data: 
+            file = form.profile_image.data
+            filename = secure_filename(file.filename)  
+            file_path = os.path.join(current_app.root_path, 'static/uploads', filename)
+            file.save(file_path)  
+            current_user.profile_image = filename
         db.session.commit()
         flash("Profile updated successfully!", "success")
         return redirect(url_for('admin.admin_edit_profile'))

@@ -1,5 +1,5 @@
 import os
-from flask import Blueprint, redirect, render_template, url_for, flash,current_app
+from flask import Blueprint, redirect, render_template, url_for, flash,current_app, request
 from flask_login import login_required , current_user
 from werkzeug.utils import secure_filename
 from app.models import Cart,Dog,Order ,db
@@ -48,6 +48,17 @@ def remove_from_cart(cart_id):
 
     db.session.delete(cart_item)
     db.session.commit()
+
+    total_price = sum(item.dog.price * item.quantity for item in Cart.query.filter_by(user_id=current_user.id).all())
+    order = Order.query.filter_by(user_id=current_user.id, status='Pending').first()
+    if order:
+        if total_price == 0:  
+            db.session.delete(order)
+        else:
+            order.total_price = total_price  
+
+    db.session.commit()
+
     flash("Item removed from your cart.", "success")
     return redirect(url_for('user.cart'))
 
@@ -55,7 +66,7 @@ def remove_from_cart(cart_id):
 @user_bp.route('/edit-profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
-    form = EditProfileForm()
+    form = EditProfileForm(obj=current_user)
 
     if form.validate_on_submit():
         current_user.username = form.username.data
@@ -65,16 +76,11 @@ def edit_profile():
             file = form.profile_image.data
             filename = secure_filename(file.filename)
             file_path = os.path.join(current_app.root_path, 'static/uploads', filename)
-
             file.save(file_path)
-
             current_user.profile_image = filename
         db.session.commit()
         flash('Your profile has been updated!', 'success')
         return redirect(url_for('user.edit_profile'))
-
-    form.username.data = current_user.username
-    form.email.data = current_user.email
 
     return render_template('edit_profile.html', form=form, user = current_user)
 
@@ -88,11 +94,16 @@ def change_password():
     if form.validate_on_submit():
         if not current_user.check_password(form.old_password.data):
             flash('Incorrect current password.', 'danger')
-        else:
-            current_user.set_password(form.new_password.data)
-            db.session.commit()
-            flash('Your password has been updated!', 'success')
             return redirect(url_for('user.change_password'))
+
+        if form.new_password.data != form.confirm_password.data:
+            flash('New passwords do not match.', 'danger')
+            return redirect(url_for('user.change_password'))
+
+        current_user.set_password(form.new_password.data)
+        db.session.commit()
+        flash('Your password has been successfully updated!', 'success')
+        return redirect(url_for('user.edit_profile')) 
 
     return render_template('change_password.html', form=form)
 
